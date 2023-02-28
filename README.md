@@ -12,7 +12,7 @@ A table may not be empty already, but it still can be reserved at manager's disc
 
 The goal of the exercise is to answer a walk-in customer when the next table is available? How much is the wait time? Manager will ask to show the list of tables sorted by availability in minutes. Manager will not necessarily choose to reserve the first one in the list. He will select at his discretion based on the number of people in the group and the table capacity. 
 
-# Note to Reviewers
+# <span style="color:red"> Note to Reviewers</span>
 Please checkout previous commit for level of work done in the assessment completed on Feburary 27, 2023.
 
 Additional work has been done for learning purposes, and this work has been done for learning and self-improvement purposes only, not as an attempt to deceive reviewers.
