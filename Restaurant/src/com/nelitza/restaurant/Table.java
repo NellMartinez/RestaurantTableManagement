@@ -19,14 +19,13 @@ public class Table {
 
     private Reservation timeSlot; //Keeps track of when a table will be available
 
-    private final int PRESET_TIME_FOR_TWO = 40;
+    private final int PRESET_TIME_FOR_TWO = 2;
 
-    private final int PRESET_TIME_FOR_NINE= 80;
+    private final int PRESET_TIME_FOR_NINE= 2;
 
     public Table(int chairs, int tableNumber){
         this.tableNumber = tableNumber;
         this.chairs = chairs;
-        this.capacity = 0;
         this.timeSlot = new Reservation();
 
     }
@@ -52,7 +51,7 @@ public class Table {
   public int getNextAvailability() {
 
 
-          return (int)this.timeSlot.getMinutesRemaining();
+          return this.timeSlot.getMinutesRemaining();
 
   }
 
@@ -64,7 +63,7 @@ public class Table {
         this.capacity = capacity;
     }
 
-    public void setTimeSlot(Reservation timeSlot) {
+    public void assignCustomersWithMinutesPreset(Reservation timeSlot) {
         this.timeSlot = timeSlot;
     }
 
@@ -72,7 +71,7 @@ public class Table {
      * Sets the time given presets
      * @param customers
      */
-    public void setTimeSlot(int customers) {
+    public void assignCustomersWithMinutesPreset(int customers) {
       if (customers <= 3){
           this.timeSlot = new Reservation(PRESET_TIME_FOR_TWO);
       }
@@ -94,8 +93,12 @@ public class Table {
         return timeSlot;
     }
 
+    public int getTableNumber() {
+        return tableNumber;
+    }
+
     @Override
     public String toString(){
-        return "Table #"+this.tableNumber+" has an remaining wait time of: " + getNextAvailability() + " minutes and has " + getChairs() + " chairs";
+        return "Table # "+(this.tableNumber)+" has an remaining wait time of: " + getNextAvailability() + " minutes and has " + getChairs() + " chairs."+ "\n";
     }
 }

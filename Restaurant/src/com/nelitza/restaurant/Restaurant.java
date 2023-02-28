@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
  * In the traditional sense a Restaurant (in the real life) has tables and a maximum capacity thus in here
  * we demonstrate that real life scenario of maximum capacity scenario according to county regulations.
  *
- * In terms of real life scenario a manager is an external actor thus a manager action can be modeled by the manager class (assigning people to tables)
- * but an employee can get time remaining for a table.
+ * In terms of real life scenario a manager is an external actor thus a manager action can be modeled by a manager class (assigning people to tables)
+ * but any employee can get time remaining for a table. For this reason we are using a simulation in RestaurantManager, but we don't have a manager class.
  */
 public class Restaurant {
 
@@ -19,7 +19,6 @@ public class Restaurant {
 
     /**
      * The constructor for the restaurant. According to the scenario the restaurant has 18 TABLES
-     * but this constructor allows for a variable amount in case of a special event, but not to exceed 18 tables
      * as per county regulations
      */
     public Restaurant() {
@@ -27,7 +26,7 @@ public class Restaurant {
         if (MAXIMUM_RESTAURANT_CAPACITY <= 18) {
             for (int i = 0; i < MAXIMUM_RESTAURANT_CAPACITY; i++) {
 
-                this.tables.add(new Table(getChairs(), i));
+                this.tables.add(new Table(getChairs(), i+1));
             }
         }
 
@@ -55,7 +54,7 @@ public class Restaurant {
      */
     public List<Table> getTimeBreakDownPerTable(){
         List<Table> sortedList = this.tables.stream()
-                .sorted(Comparator.comparing(Table::getNextAvailability).reversed())
+                .sorted(Comparator.comparing(Table::getNextAvailability))
                 .collect(Collectors.toList());
         return sortedList;
     }
@@ -66,30 +65,65 @@ public class Restaurant {
      * @param customers
      * @param minutesForReservation
      */
-    public void addCustomersToTable(int customers, int minutesForReservation){
+    public void assignCustomersToAnyTableGivenMinutes(int customers, int minutesForReservation){
         List<Table> availableTables = getAvailableTables();
 
         for(Table table: availableTables){
             if (table.isAvailable() && table.getChairs() >= customers){
-                table.setTimeSlot(new Reservation(minutesForReservation));
+                table.assignCustomersWithMinutesPreset(new Reservation(minutesForReservation));
                 table.setCapacity(customers);
             }
         }
     }
 
+    /**
+     * Manager assigns customers to a table with a custom time for the customers
+     * to be present at the table, gives reservation time and table number
+     * @param customers
+     * @param minutesForReservation
+     */
+    public void assignCustomersToTableWithReservationMinutes(int customers, int tableNumber, int minutesForReservation){
+        List<Table> availableTables = getAvailableTables();
+
+        for(Table table: availableTables){
+            if (table.isAvailable() && table.getChairs() >= customers){
+                table.assignCustomersWithMinutesPreset(new Reservation(minutesForReservation));
+                table.setCapacity(customers);
+            }
+        }
+    }
+
+    /**
+     * Manager assigns customers to a table with a custom time for the customers
+     * to be present at the table, gives reservation time and table number
+     * @param customers
+     * @param tableNumber
+     * @return
+     */
+    public void assignCustomersToTable(int customers, int tableNumber){
+        List<Table> availableTables = getAvailableTables();
+        Optional<Table> table = availableTables.stream().filter(t -> t.getTableNumber() == tableNumber && t.getChairs() >= customers).findAny();
+
+        if (table.isPresent()){
+            table.get().assignCustomersWithMinutesPreset(customers);
+        }
+
+
+    }
 
 
     /**
      * Manager assigns customers to a table with a pre-set time according to the amount of people sitting at that table
      * @param customers
      */
-    public void addCustomersToTable(int customers){
+    public void assignCustomersToAnyTable(int customers){
         List<Table> availableTables = getAvailableTables();
 
         for(Table table: availableTables){
             if (table.isAvailable() && table.getChairs() >= customers){
-                table.setTimeSlot(customers);
+                table.assignCustomersWithMinutesPreset(customers);
                 table.setCapacity(customers);
+                break;
             }
         }
 
